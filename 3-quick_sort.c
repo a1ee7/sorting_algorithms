@@ -14,32 +14,36 @@ void swap(int *array, ssize_t item1, ssize_t item2)
 	array[item2] = tmp;
 }
 /**
- *hoare_partition - hoare partition sorting scheme implementation
+ *lomuto_partition - lomuto partition sorting scheme implementation
  *@array: array
  *@first: first array element
  *@last: last array element
  *@size: size array
  *Return: return the position of the last element sorted
  */
-int hoare_partition(int *array, int first, int last, int size)
+int lomuto_partition(int *array, ssize_t first, ssize_t last, size_t size)
 {
-	int current = first - 1, finder = last + 1;
 	int pivot = array[last];
+	ssize_t current = first, finder;
 
-	while (1)
+	for (finder = first; finder < last; finder++)
 	{
-
-		do {
+		if (array[finder] < pivot)
+		{
+			if (array[current] != array[finder])
+			{
+				swap(array, current, finder);
+				print_array(array, size);
+			}
 			current++;
-		} while (array[current] < pivot);
-		do {
-			finder--;
-		} while (array[finder] > pivot);
-		if (current >= finder)
-			return (current);
-		swap(array, current, finder);
+		}
+	}
+	if (array[current] != array[last])
+	{
+		swap(array, current, last);
 		print_array(array, size);
 	}
+	return (current);
 }
 /**
  *qs - qucksort algorithm implementation
@@ -52,19 +56,21 @@ void qs(int *array, ssize_t first, ssize_t last, int size)
 {
 	ssize_t position = 0;
 
+
 	if (first < last)
 	{
-		position = hoare_partition(array, first, last, size);
+		position = lomuto_partition(array, first, last, size);
+
 		qs(array, first, position - 1, size);
-		qs(array, position, last, size);
+		qs(array, position + 1, last, size);
 	}
 }
 /**
- *quick_sort_hoare - prepare the terrain to quicksort algorithm
+ *quick_sort - prepare the terrain to quicksort algorithm
  *@array: array
  *@size: array size
  */
-void quick_sort_hoare(int *array, size_t size)
+void quick_sort(int *array, size_t size)
 {
 	if (!array || size < 2)
 		return;
